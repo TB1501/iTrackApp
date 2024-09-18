@@ -1,0 +1,119 @@
+﻿@page "/"
+@using iTrack.Models;
+@using iTrack.Services;
+
+@if (Clients == null)
+{
+	<p>Loading clients...</p> <!-- Display while waiting for data -->
+}
+else
+
+{
+	
+	<Card>
+		<div class="table-responsive">
+			<table class="table table-borderless mb-0">
+				<thead>
+					<tr>
+						<th></th>
+						<th class="centered-cell">ID</th>
+						<th class="centered-cell">Personal data</th>
+						<th class="centered-cell">Status</th>
+						<th class="centered-cell">Enrolment</th>
+						<th class="centered-cell">Price</th>
+						<th class="centered-cell">Debt</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach(var client in Clients)
+					{
+						<tr class="shadow-lg m-1 employee-row mb-5">
+							<td class="centered-cell"><img class="round-image" width="80" src="@client.ImgUrl" /></td>
+							<td class="centered-cell">@client.Id</td>
+							<td >
+								<div class ="client-name centered-cell">@client.Name</div>
+								<div class ="centered-cell">@client.Email</div>
+
+							</td>
+							<td class="centered-cell client-status @(client.Status == Client.ClientStatus.Active ? "status-active" : "status-inactive")">@client.Status</td>
+							<td class="centered-cell">@client.Enrolment.ToString("dd/MM/yyyy")</td>
+							<td class="centered-cell">@client.ServicePrice EUR</td>
+							<td class="centered-cell">@client.Debt EUR</td>
+							<td class="centered-cell">
+								<TableButton OnClickCallback="@(()=>NavigateToClientDetail(client.Id))" />
+							</td>
+						</tr>
+					})
+
+				</tbody>
+
+			</table>
+
+		</div>
+	</Card>
+
+}
+
+@code {
+	[Inject] private IClientServices ClientService { get; set; }
+[Inject] private NavigationManager NavigationManager { get; set; }
+
+	private List<Client>? Clients;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var response = await ClientService.GetClients();
+
+		Clients = response.Clients;
+	}
+
+	private void NavigateToClientDetail(int clientId)
+	{
+		NavigationManager.NavigateTo($"/client/{clientId}");
+	}
+}
+
+<style>
+	/* Center content inside table cells */
+	.centered-cell {
+		text-align: center;
+		vertical-align: middle;
+		padding: 10px;
+	}
+
+	/* Rounded employee images */
+	.round-image {
+		border-radius: 50%; /* Creates a circular image */
+		object-fit: cover; /* Ensures the image fits inside the circle */
+		width: 80px;
+		height: 80px;
+	}
+
+
+	/* Employee name styling */
+	.client-name {
+		font-weight: bold;
+		font-size: 1.1em; /* Slightly larger font */
+	}
+
+	/* Employee status when active */
+	.status-active {
+		color: green; /* Green for active status */
+		font-weight: bold;
+	}
+
+	/* Employee status when inactive */
+	.status-inactive {
+		color: red; /* Red for inactive status */
+		font-weight: bold;
+	}
+
+	/* Default client status styling for consistency */
+	.client-status {
+		font-size: 0.9em; /* Adjust the size as needed */
+	}
+
+
+
+</style>
+

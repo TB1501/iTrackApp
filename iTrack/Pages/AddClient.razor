@@ -1,0 +1,85 @@
+﻿@page "/add-client"
+@using iTrack.Models.DTOs;
+@using iTrack.Services;
+@using iTrack.Models;
+
+<Card>
+	<div class="row user-detail-row">
+		<h3>Add New Client</h3>
+		<div class="form-group">
+			<EditForm Model="@addClientForm" OnValidSubmit="AddNewClient">
+				<DataAnnotationsValidator />
+				<ValidationSummary />
+				<div class="form-floating mb-3">
+					<InputText @bind-Value="addClientForm.Name" class="form-control" id="floatingInput" placeholder="Name here"/>
+					<label for="floatingInput">Name</label>
+				</div>
+				<div class="form-floating mb-3">
+					<InputText @bind-Value="addClientForm.Email" class="form-control" id="floatingInput" placeholder="Email here" />
+					<label for="floatingInput">Email</label>
+				</div>
+				<div class="form-floating mb-3">
+					<InputDate @bind-Value="addClientForm.Enrolment" class="form-control" id="floatingInput" placeholder="Enrolment date" />
+					<label for="floatingInput">Enrolment date</label>
+				</div>
+				<div class="form-floating mb-3">
+					<InputSelect @bind-Value="addClientForm.Status" class="form-select" id="floatingInput" placeholder="Client status">
+						@foreach (Client.ClientStatus status in Enum.GetValues(typeof(Client.ClientStatus)))
+						{
+							<option value="@status">@status.ToString()</option>
+						}
+					</InputSelect>
+					<label for="floatingInput">Active or Inactive</label>
+				</div>
+				<div class="form-floating mb-3">
+					<InputNumber @bind-Value="addClientForm.ServicePrice" class="form-control" id="floatingInput" placeholder="Service price" />
+					<label for="floatingInput">Service price</label>
+				</div>
+				<div class="form-floating mb-3">
+					<InputNumber @bind-Value="addClientForm.Debt" class="form-control" id="floatingInput" placeholder="Active debt" />
+					<label for="floatingInput">Debt</label>
+				</div>
+				<div class="mb-3">
+					<button class="btn btn-outline-secondary" type="button" @onclick="GenerateRandomAvatarUrl">Generate Random Avatar</button>
+				</div>
+
+				<div class="form-floating mb-3">
+					<InputText @bind-Value="addClientForm.ImgUrl" class="form-control" id="floatingImgUrl" placeholder="Generated image URL here" readonly />
+					<label for="floatingImgUrl">Generated Image URL</label>
+				</div>
+
+				<div class="mb-3">
+					<img src="@addClientForm.ImgUrl" alt="Generated Avatar" class="img-thumbnail" style="width: 500 px; height: 500px;"  />
+				</div>
+	
+			<button calss="btn btn-outline-secondary" type="submit">Submit</button>
+			</EditForm>
+
+		</div>
+
+	</div>
+
+</Card>
+
+@code {
+	[Inject] private IClientServices ClientService { get; set; }
+	[Inject] private NavigationManager NavigationManager { get; set; }
+
+	private AddClientForm addClientForm = new();
+
+	private async Task AddNewClient()
+	{
+		var response = await ClientService.AddClient(addClientForm);
+		NavigationManager.NavigateTo("/");
+	}
+
+	private void GenerateRandomAvatarUrl()
+	{
+		// Generate a random number between 1 and 10
+		Random random = new Random();
+		int randomSeed = random.Next(1, 11); // Range [1, 10]
+
+		// Construct the URL using the random seed
+		addClientForm.ImgUrl = $"https://api.dicebear.com/9.x/pixel-art/svg?seed={randomSeed}";
+	}
+}
