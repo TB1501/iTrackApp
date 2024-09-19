@@ -6,9 +6,35 @@
 	<title>@ViewData["Title"] - iTrack</title>
 	<link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet" />
 	<link href="~/css/site.css" rel="stylesheet" />
+    <style>
+        /* Set the background color to match Blazor menu */
+        body {
+            background-color: #343a40; /* Adjust this to match your Blazor menu's background color */
+        }
+
+        /* Styling for h3 */
+        h3 {
+            color: #ff5733; /* Change text color to #ff5733 */
+            font-size: 5rem; /* Make the text larger */
+
+        }
+
+        p{
+			color:white; /* Change text color to #ff5733 */
+			font-size: 3rem; /* Make the text larger */
+		}
+
+        /* Centering content */
+        .center-content {
+            text-align: center;
+        }
+    </style>
 </head>
 <body style="margin:50px">
-	Layout for Identity pages
+    <div class="center-content">
+        <h3 class="bullet">iTrack</h3>
+        <p>Track your clients with ease</p>
+     </div>
 	@RenderBody()
 
 </body>

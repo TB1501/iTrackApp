@@ -1,7 +1,25 @@
 ﻿@page
 @model LoginModel
 @{
-    <div class="h-100">
+       <style>
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            animation: fadeInAnimation ease 2s;
+            animation-fill-mode: forwards;
+        }
+
+        @@keyframes fadeInAnimation {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <div class="h-100 fade-in">
         <div class="mask d-flex align-items-center h-100">
             <div class="container">
                 <div class="row justify-content-center p-5">
